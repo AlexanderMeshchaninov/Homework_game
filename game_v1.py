@@ -10,7 +10,7 @@ def score_game(predict_number_game) -> int:
     """
     # Количество попыток
     count_lst = []
-    np.random.seed(99) # фиксирует сид чисел 
+    np.random.seed(3) # фиксирует сид чисел 
     random_arr = np.random.randint(1, 100, size=1000) # задаем список чисел
     
     for number in random_arr:
@@ -24,7 +24,7 @@ def score_game(predict_number_game) -> int:
 
 print('-' * 40)
 def predict_number_game(number:int=1) -> int:
-    """Функция (игра) "угадай число" где сам компьютер загадывает случайное число и сам отгадывает его за минимальное 
+    """Функция (игра) "угадай число" где сам компьютер загадывает случайное число и сам отгадывает его за минимальное (V1 - почти бинарный поиск)
     количество попыток по написанному алгоритму
 
     Args:
@@ -34,33 +34,26 @@ def predict_number_game(number:int=1) -> int:
         int: число попыток
     """
     count = 0
-    # Вначале компьютер будет загадывать сразу срединное число 50
-    predict_number = 50
+    # Вначале компьютер будет загадывать
+    predict_number = 0
+    min = 1
+    max = 100
+    
     while True:
         # Количество попыток
         count+=1
+        # Угадываем число, задаем сначала отрезок от 1 до 100
+        predict_number = np.random.randint(min, max)
+        
         # Условие выхода из цикла, когда число угадано
         if predict_number == number: break
-        
-        # Примерная иллюстрация нашего отрезка от 1 до 100
-        # левая сторона [1] --- (25) --- (50) --- (75) --- [100] правая сторона
-        # Если загаданное число (number) больше чем 50 (середина) идем вправо
+        # Если загаданное число (number) больше нашего числа, то начинаем считать от этого числа
         elif number > predict_number:
-            if predict_number == 50:
-                # Ставим ставим середину между 50 --- (75) --- 100
-                predict_number = 75
-            else:
-                # Отсчитываем от 75 к 100
-                predict_number += 1
-        # Если загаданное число (number) меньше чем 50 (середина) идем влево
+            min = predict_number
+        # Если загаданное число (number) меньше нашего числа, то начинаем считать от этого числа
         elif number < predict_number:
-            if predict_number == 50:
-                # Ставим ставим середину между 50 --- (25) --- 1
-                predict_number = 25
-            else:
-                # Отсчитываем от 25 к 1
-                predict_number -= 1
-
+            max = predict_number
+            
     return(count)
 
 score_game(predict_number_game)
